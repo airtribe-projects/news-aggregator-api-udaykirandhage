@@ -4,25 +4,11 @@ const apikey = '08c162b2113e3b1102edd9cfa35b8ffb';
 const category = 'world';
 const url = `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=us&max=10&apikey=${apikey}`;
 
-const GetApi = async (req, res) => {
+const GetApi = async (req,res) => {
   try {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-           console.log("Invalid token");
-      return res.status(400).json({ message: "Invalid token" });
-    }
-
-    const token = req.headers.authorization // Extracting actual token
-    const decodedToken = jwt.verify(token,"Hello Taken");
-    console.log(decodedToken)
-
-    if (!decodedToken) {
- 
-      return res.status(400).json({ message: "Invalid Token" });
-    }
-
-    if (decodedToken.role !== "admin" && decodedToken.role !== "user") {
+   
+    if (req.user.role !== "admin" && req.user.role !== "user") {
+      console.log(req.user.role)
       return res.status(403).json({ message: "Forbidden: No Access" });
     }
 
