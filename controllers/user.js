@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router();
 const userModel = require('../Database/database')
 const bcrypt = require('bcrypt')
+const jwt=require("jsonwebtoken")
+const JWT_Secret = "Hello Taken"
+
 router.use(express.json());
 
 //Registering user
@@ -44,15 +47,22 @@ const login = (async (req,res)=>{
         if(!isPasswordvalid){
            res.status(401).send("Invalid password")
         }
-        return res.send(Dbuser)
-    
+
+        const resUser = {
+            name:Dbuser.name,
+            email:Dbuser.email,
+            role:Dbuser.role
+        }
+
+        const token = jwt.sign(resUser,JWT_Secret,{expiresIn: '2h'})
+         console.log(token)
+        return res.send(token)
+       
           
        }
    catch(err){
     console.log(err);
    }
 })
-
-
 
 module.exports = {login,register}
